@@ -3,8 +3,8 @@ library(dplyr)
 `%notin%` <- Negate(`%in%`)  
 #setwd("C:/Users/Emily/Downloads")
 
-individual<-read.csv("Sankar118.csv")         #Replace this with the name of the individual you queried in FEC.gov
-mastermerge<-read.csv("cm24.txt",sep = "|")   #Replace this with the name of the Committee master data data for your congressional session
+individual<-read.csv("C:/Users/cemiw/Downloads/schedule_a-2026-10-26T00_29_42.csv")         #Replace this with the name of the individual you queried in FEC.gov
+mastermerge<-read.csv("cm26.txt",sep = "|")   #Replace this with the name of the Committee master data data for your congressional session
 #information: https://www.fec.gov/campaign-finance-data/committee-master-file-description/
 
 
@@ -37,9 +37,14 @@ individual2 <- individual %>%
 
 
 
-#below are some functions that show
+#below are some functions that show total amounts for donation for each party
 sum(individual2$contribution_receipt_amount[individual2$CMTE_PTY_AFFILIATION=="REP"])
 sum(individual2$contribution_receipt_amount[individual2$CMTE_PTY_AFFILIATION=="DEM"])
+
+
+#This is to deal with any parties listed as
+individual2[individual2$CMTE_PTY_AFFILIATION %notin% c("DEM","REP")]
+
 sum(individual2$contribution_receipt_amount[individual2$CMTE_PTY_AFFILIATION %notin% c("DEM","REP")])
 ncol(individual2[individual2$CMTE_PTY_AFFILIATION %notin% c("DEM","REP")])
 
