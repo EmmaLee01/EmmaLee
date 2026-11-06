@@ -108,19 +108,20 @@ for c in results:
 import os
 import requests
 import pandas as pd
-import requests
-import pandas as pd
 
 BASE = "https://api.open.fec.gov/v1/schedules/schedule_a/"
 PER_PAGE = 100
 params = {
     "api_key": "2O37DmX4vMDeaBbxDsMtJCiMW8OSZRX7JabOu4Uk",
-    "contributor_name": "Wrigley, Drew",
-    "contributor_occupation": "Attorney",
-#    "contributor_employer": "Shield AI",
+    "contributor_name": "  Abaya, Ruth",
+#    "contributor_occupation": "Patrol",
+#    "contributor_employer": "Walhalla Chamber of Commerce",
     "two_year_transaction_period": 2022,
     "min_date": "2021-01-03",
-    "max_date": "2023-01-03",
+   "max_date": "2023-01-03",
+#    "two_year_transaction_period": 2024,
+#    "min_date": "2023-01-03",
+#    "max_date": "2025-01-03",
     "is_individual": "true",
     "sort": "-contribution_receipt_date",
     "per_page": PER_PAGE,
@@ -165,10 +166,16 @@ while True:
     params["last_index"] = last["last_index"]
     params["last_contribution_receipt_date"] = last["last_contribution_receipt_date"]
 
+
+
+
+
 df = pd.DataFrame(rows)
 print(df.to_string(index=False))
 
-
+df['amount'].clip(lower=0).sum()
+df.loc[df['party'] != 'DEM', 'amount'].clip(lower=0).sum()
+len(df)
 
 print(df[df["memo"].isna()].groupby("party_full", dropna=False)["amount"].sum())
 
