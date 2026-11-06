@@ -9,12 +9,12 @@ mastermerge<-read.csv("cm26.txt",sep = "|")   #Replace this with the name of the
 
 
 colnames(mastermerge)<-c(                     #replacing column names for the committee 
-"CMTE_ID",
-"CMTE_NM",
-"TRES_NM",
-"CMTE_ST1",
-"CMTE_ST2",
-"CMTE_CITY",
+  "CMTE_ID",
+  "CMTE_NM",
+  "TRES_NM",
+  "CMTE_ST1",
+  "CMTE_ST2",
+  "CMTE_CITY",
 "CMTE_ST",
 "CMTE_ZIP",
 "CMTE_DSGN",
