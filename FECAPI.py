@@ -104,6 +104,7 @@ for c in results:
 
 
 
+
 import os
 import requests
 import pandas as pd
@@ -112,10 +113,10 @@ BASE = "https://api.open.fec.gov/v1/schedules/schedule_a/"
 params = {
     "api_key":"2O37DmX4vMDeaBbxDsMtJCiMW8OSZRX7JabOu4Uk",
     "contributor_name": "Tseng, Brandon",
-    "contributor_employer": "Shield AI",
-    "two_year_transaction_period": 2026,
-    "min_date": "2025-01-03",
-    "max_date": "2027-01-03",
+#    "contributor_employer": "Shield AI",
+    "two_year_transaction_period": 2024,
+    "min_date": "2023-01-03",
+    "max_date": "2025-01-03",
     "is_individual": "true",
     "sort": "-contribution_receipt_date",
     "per_page": 100,
@@ -156,3 +157,6 @@ print(df[df["memo"].isna()].groupby("party_full", dropna=False)["amount"].sum())
 
 
 df[['recipient', 'party']]
+pd.set_option('display.max_columns', None)  # Show all columns
+pd.set_option('display.width', 1000)        # Don't wrap text to the next line
+print(df)
