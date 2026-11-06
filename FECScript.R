@@ -9,12 +9,12 @@ mastermerge<-read.csv("~/GitHub/EmmaLee/FEC_ARMED/cm24.txt",sep = "|")   #Replac
 
 
 colnames(mastermerge)<-c(                     #replacing column names for the committee 
-"CMTE_ID",
-"CMTE_NM",
-"TRES_NM",
-"CMTE_ST1",
-"CMTE_ST2",
-"CMTE_CITY",
+  "CMTE_ID",
+  "CMTE_NM",
+  "TRES_NM",
+  "CMTE_ST1",
+  "CMTE_ST2",
+  "CMTE_CITY",
 "CMTE_ST",
 "CMTE_ZIP",
 "CMTE_DSGN",

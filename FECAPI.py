@@ -13,11 +13,11 @@ CANDIDATE_FIELDS = [
     "status"
 ]
 params = {
-    "contributor_state": "VA",
+#    "contributor_state": "VA",
     "min_amount": 1000,
     "two_year_transaction_period": 2026,
     "api_key": "2O37DmX4vMDeaBbxDsMtJCiMW8OSZRX7JabOu4Uk",
-    "per_page": 20
+    "per_page": 100
 }
 response = requests.get(url, params=params)
 response_dict=response.json()['results']
@@ -66,11 +66,11 @@ data = response.json()
 BASE = "https://api.open.fec.gov/v1/schedules/schedule_a/"
 params = {
     "api_key": "2O37DmX4vMDeaBbxDsMtJCiMW8OSZRX7JabOu4Uk",  
-    "contributor_name": "Tseng, Brandon",
-    "contributor_employer": "Shield AI",
-    "two_year_transaction_period": 2026,  # covers 2025-2026 (119th Congress)
-    "min_date": "2025-01-03",             # 119th Congress convened
-    "max_date": "2027-01-03",             # ...and ends
+    "contributor_name": "Wrigley, Drew",
+#    "contributor_employer": "Shield AI",
+    "two_year_transaction_period": 2024,  # covers 2025-2026 (119th Congress)
+    "min_date": "2023-01-03",             # 119th Congress convened
+    "max_date": "2025-01-03",             # ...and ends
     "is_individual": "true",
     "sort": "-contribution_receipt_date",
     "per_page": 100,
@@ -108,41 +108,56 @@ for c in results:
 import os
 import requests
 import pandas as pd
+import requests
+import pandas as pd
 
 BASE = "https://api.open.fec.gov/v1/schedules/schedule_a/"
+PER_PAGE = 100
 params = {
-    "api_key":"2O37DmX4vMDeaBbxDsMtJCiMW8OSZRX7JabOu4Uk",
-    "contributor_name": "Tseng, Brandon",
+    "api_key": "2O37DmX4vMDeaBbxDsMtJCiMW8OSZRX7JabOu4Uk",
+    "contributor_name": "Wrigley, Drew",
+    "contributor_occupation": "Attorney",
 #    "contributor_employer": "Shield AI",
-    "two_year_transaction_period": 2024,
-    "min_date": "2023-01-03",
-    "max_date": "2025-01-03",
+    "two_year_transaction_period": 2022,
+    "min_date": "2021-01-03",
+    "max_date": "2023-01-03",
     "is_individual": "true",
     "sort": "-contribution_receipt_date",
-    "per_page": 100,
+    "per_page": PER_PAGE,
 }
 
-rows = []
+rows, seen = [], set()
 while True:
     r = requests.get(BASE, params=params)
     r.raise_for_status()
     data = r.json()
+    page = data["results"]
 
-    for c in data["results"]:
+    new_on_page = 0
+    for c in page:
+        if c["sub_id"] in seen:          # already collected this record
+            continue
+        seen.add(c["sub_id"])
+        new_on_page += 1
         cm = c.get("committee") or {}
         rows.append({
             "date": c["contribution_receipt_date"],
             "donor": c["contributor_name"],
             "employer": c["contributor_employer"],
+            "job": c["contributor_occupation"],
             "amount": c["contribution_receipt_amount"],
             "recipient": cm.get("name"),
             "committee_id": c.get("committee_id"),
             "committee_type": cm.get("committee_type_full"),
-            "party": cm.get("party"),            # e.g. "DEM", "REP"
-            "party_full": cm.get("party_full"),  # e.g. "DEMOCRATIC PARTY"
+            "party": cm.get("party"),
+            "party_full": cm.get("party_full"),
             "conduit": c.get("conduit_committee_name"),
             "memo": c.get("memo_code"),
         })
+
+    # Stop conditions: short page, or nothing new (cursor not advancing)
+    if len(page) < PER_PAGE or new_on_page == 0:
+        break
 
     last = data["pagination"].get("last_indexes")
     if not last:
@@ -153,10 +168,12 @@ while True:
 df = pd.DataFrame(rows)
 print(df.to_string(index=False))
 
+
+
 print(df[df["memo"].isna()].groupby("party_full", dropna=False)["amount"].sum())
 
 
 df[['recipient', 'party']]
-pd.set_option('display.max_columns', None)  # Show all columns
-pd.set_option('display.width', 1000)        # Don't wrap text to the next line
-print(df)
+
+df.to_csv('DWDWDW.csv', index=False)
+
