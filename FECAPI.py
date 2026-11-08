@@ -113,18 +113,30 @@ BASE = "https://api.open.fec.gov/v1/schedules/schedule_a/"
 PER_PAGE = 100
 params = {
     "api_key": "2O37DmX4vMDeaBbxDsMtJCiMW8OSZRX7JabOu4Uk",
-    "contributor_name": "  Abaya, Ruth",
-#    "contributor_occupation": "Patrol",
-#    "contributor_employer": "Walhalla Chamber of Commerce",
-    "two_year_transaction_period": 2022,
-    "min_date": "2021-01-03",
-   "max_date": "2023-01-03",
-#    "two_year_transaction_period": 2024,
-#    "min_date": "2023-01-03",
-#    "max_date": "2025-01-03",
+    "contributor_name": "Smith, Daniel",
+#    "contributor_occupation": "Attorney",
+#    "contributor_employer": "Florida",
+
+# 117th
+#    "two_year_transaction_period": 2022,
+#    "min_date": "2021-01-03",
+#   "max_date": "2023-01-03",
+#116th
+#    "two_year_transaction_period": 2020,
+#    "min_date": "2019-01-03",
+#    "max_date": "2021-01-03",
+#112th
+    "two_year_transaction_period": 2012,
+    "min_date": "2011-01-03",
+    "max_date": "2013-01-03",
+#111th
+#    "two_year_transaction_period": 2010,
+#    "min_date": "2009-01-03",
+#    "max_date": "2011-01-03",
     "is_individual": "true",
     "sort": "-contribution_receipt_date",
     "per_page": PER_PAGE,
+
 }
 
 rows, seen = [], set()
@@ -144,6 +156,7 @@ while True:
         rows.append({
             "date": c["contribution_receipt_date"],
             "donor": c["contributor_name"],
+            "state": c["contributor_state"],
             "employer": c["contributor_employer"],
             "job": c["contributor_occupation"],
             "amount": c["contribution_receipt_amount"],
@@ -153,7 +166,9 @@ while True:
             "party": cm.get("party"),
             "party_full": cm.get("party_full"),
             "conduit": c.get("conduit_committee_name"),
+
             "memo": c.get("memo_code"),
+
         })
 
     # Stop conditions: short page, or nothing new (cursor not advancing)
