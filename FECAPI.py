@@ -66,7 +66,7 @@ data = response.json()
 BASE = "https://api.open.fec.gov/v1/schedules/schedule_a/"
 params = {
     "api_key": "2O37DmX4vMDeaBbxDsMtJCiMW8OSZRX7JabOu4Uk",  
-    "contributor_name": "Wrigley, Drew",
+    "contributor_name": "Cate, Fred",
 #    "contributor_employer": "Shield AI",
     "two_year_transaction_period": 2024,  # covers 2025-2026 (119th Congress)
     "min_date": "2023-01-03",             # 119th Congress convened
@@ -113,9 +113,9 @@ BASE = "https://api.open.fec.gov/v1/schedules/schedule_a/"
 PER_PAGE = 100
 params = {
     "api_key": "2O37DmX4vMDeaBbxDsMtJCiMW8OSZRX7JabOu4Uk",
-    "contributor_name": "Smith, Daniel",
-#    "contributor_occupation": "Attorney",
-#    "contributor_employer": "Florida",
+    "contributor_name": "Frick, Joseph",
+#    "contributor_occupation": "Cardio",
+#    "contributor_employer": "indiana",
 
 # 117th
 #    "two_year_transaction_period": 2022,
@@ -126,13 +126,18 @@ params = {
 #    "min_date": "2019-01-03",
 #    "max_date": "2021-01-03",
 #112th
-    "two_year_transaction_period": 2012,
-    "min_date": "2011-01-03",
-    "max_date": "2013-01-03",
+#    "two_year_transaction_period": 2012,
+#    "min_date": "2011-01-03",
+#    "max_date": "2013-01-03",
 #111th
 #    "two_year_transaction_period": 2010,
 #    "min_date": "2009-01-03",
 #    "max_date": "2011-01-03",
+#110th
+    "two_year_transaction_period": 2008,
+    "min_date": "2007-01-03",
+    "max_date": "2019-01-03",
+
     "is_individual": "true",
     "sort": "-contribution_receipt_date",
     "per_page": PER_PAGE,
@@ -161,8 +166,8 @@ while True:
             "job": c["contributor_occupation"],
             "amount": c["contribution_receipt_amount"],
             "recipient": cm.get("name"),
-            "committee_id": c.get("committee_id"),
-            "committee_type": cm.get("committee_type_full"),
+#            "committee_id": c.get("committee_id"),
+#            "committee_type": cm.get("committee_type_full"),
             "party": cm.get("party"),
             "party_full": cm.get("party_full"),
             "conduit": c.get("conduit_committee_name"),
@@ -188,8 +193,25 @@ while True:
 df = pd.DataFrame(rows)
 print(df.to_string(index=False))
 
+
+duplicate_date_rows = df[df.duplicated(subset=['date'], keep=False)]
+others = df.sort_values(by='party')
+
+
 df['amount'].clip(lower=0).sum()
-df.loc[df['party'] != 'DEM', 'amount'].clip(lower=0).sum()
+df.loc[df['party'] == 'DEM', 'amount'].clip(lower=0).sum()
+df.loc[df['party'].isna(), 'amount'].clip(lower=0).sum()
+
+
+
+df2 = df[df["memo"].isna()]                                 #no memo
+df2['amount'].clip(lower=0).sum()
+df2.sort_values(by='party')
+df2.loc[df2['party'] == 'DEM', 'amount'].clip(lower=0).sum()
+df_filtered = df2[df2['recipient'].str.contains('Blue', case=False, na=False)]
+df_filtered['amount'].clip(lower=0).sum()
+
+
 len(df)
 
 print(df[df["memo"].isna()].groupby("party_full", dropna=False)["amount"].sum())
